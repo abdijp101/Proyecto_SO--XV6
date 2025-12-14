@@ -1,51 +1,52 @@
-NOTE: we have stopped maintaining the x86 version of xv6, and switched
-our efforts to the RISC-V version
-(https://github.com/mit-pdos/xv6-riscv.git)
+# 🚀 Proyecto_SO-XV6: Modificación y Extensión del Kernel XV6
 
-xv6 is a re-implementation of Dennis Ritchie's and Ken Thompson's Unix
-Version 6 (v6).  xv6 loosely follows the structure and style of v6,
-but is implemented for a modern x86-based multiprocessor using ANSI C.
+**Autor:** @abdijp101 (o tu nombre/equipo)
 
-ACKNOWLEDGMENTS
+Este repositorio documenta e implementa un conjunto de modificaciones y extensiones al sistema operativo [XV6](https://pdos.csail.mit.edu/os/xv6.html), con el objetivo de explorar y ampliar sus funcionalidades base como parte de un proyecto de Sistemas Operativos.
 
-xv6 is inspired by John Lions's Commentary on UNIX 6th Edition (Peer
-to Peer Communications; ISBN: 1-57398-013-7; 1st edition (June 14,
-2000)). See also https://pdos.csail.mit.edu/6.828/, which
-provides pointers to on-line resources for v6.
+---
 
-xv6 borrows code from the following sources:
-    JOS (asm.h, elf.h, mmu.h, bootasm.S, ide.c, console.c, and others)
-    Plan 9 (entryother.S, mp.h, mp.c, lapic.c)
-    FreeBSD (ioapic.c)
-    NetBSD (console.c)
+## 🎯 Objetivo General del Proyecto
 
-The following people have made contributions: Russ Cox (context switching,
-locking), Cliff Frey (MP), Xiao Yu (MP), Nickolai Zeldovich, and Austin
-Clements.
+Implementar y extender diversas características del kernel y del espacio de usuario de XV6, centrándose en el diagnóstico, la auditoría y la gestión de recursos del sistema.
 
-We are also grateful for the bug reports and patches contributed by Silas
-Boyd-Wickizer, Anton Burtsev, Cody Cutler, Mike CAT, Tej Chajed, eyalz800,
-Nelson Elhage, Saar Ettinger, Alice Ferrazzi, Nathaniel Filardo, Peter
-Froehlich, Yakir Goaron,Shivam Handa, Bryan Henry, Jim Huang, Alexander
-Kapshuk, Anders Kaseorg, kehao95, Wolfgang Keller, Eddie Kohler, Austin
-Liew, Imbar Marinescu, Yandong Mao, Matan Shabtay, Hitoshi Mitake, Carmi
-Merimovich, Mark Morrissey, mtasm, Joel Nider, Greg Price, Ayan Shafqat,
-Eldar Sehayek, Yongming Shen, Cam Tenny, tyfkda, Rafael Ubal, Warren
-Toomey, Stephen Tu, Pablo Ventura, Xi Wang, Keiichi Watanabe, Nicolas
-Wolovick, wxdao, Grant Wu, Jindong Zhang, Icenowy Zheng, and Zou Chang Wei.
+## 🛠️ Modificaciones y Funcionalidades Implementadas
 
-The code in the files that constitute xv6 is
-Copyright 2006-2018 Frans Kaashoek, Robert Morris, and Russ Cox.
+Las modificaciones se estructuran en las siguientes áreas principales:
 
-ERROR REPORTS
+### 1. 🔍 Instrumentación de Llamadas al Sistema (Syscall Tracing)
 
-We don't process error reports (see note on top of this file).
+Modificación del kernel para auditar y registrar la actividad de las llamadas al sistema.
 
-BUILDING AND RUNNING XV6
+* **Registro en tiempo de ejecución:** El kernel debe registrar y mostrar en pantalla cada llamada al sistema (syscall) que se ejecuta.
+* **Detalle de la llamada:** Mostrar el **nombre** de la syscall y los **parámetros** específicos utilizados.
+* **Control de auditoría:** La funcionalidad debe poder **activarse y desactivarse** dinámicamente mediante un nuevo comando de usuario o un *flag* del sistema.
 
-To build xv6 on an x86 ELF machine (like Linux or FreeBSD), run
-"make". On non-x86 or non-ELF machines (like OS X, even on x86), you
-will need to install a cross-compiler gcc suite capable of producing
-x86 ELF binaries (see https://pdos.csail.mit.edu/6.828/).
-Then run "make TOOLPREFIX=i386-jos-elf-". Now install the QEMU PC
-simulator and run "make qemu".
+### 2. 🔢 Contador de Invocaciones por Llamada al Sistema (Syscall Counting)
+
+Implementación de una infraestructura interna para el conteo estadístico de las syscalls.
+
+* **Estructura de datos en Kernel:** Diseñar una estructura de datos residente en el kernel para llevar la cuenta acumulada de las invocaciones de **cada** syscall.
+* **Nueva Syscall de Consulta:** Implementar una nueva llamada al sistema para consultar (leer) los valores de dichos contadores desde el espacio de usuario.
+* **Comando de Usuario:** Implementar un comando de usuario que utilice esta nueva syscall para mostrar los contadores de todas las invocaciones de manera clara.
+
+### 3. ⌨️ Nuevos Comandos de Usuario (Espacio de Usuario)
+
+Implementación de herramientas de diagnóstico y administración en el espacio de usuario.
+
+* Implementar al menos **dos (02) comandos** nuevos o extendidos en XV6:
+    * **Ejemplo 1 (Diagnóstico):** Implementación de un `uptime` extendido para mostrar información detallada (tiempo de ejecución total del sistema, número de procesos activos, etc.).
+    * **Ejemplo 2 (Administración):** Implementación de un comando como `psmem` o `schedinfo` para mostrar información de la memoria utilizada por los procesos o detalles sobre la planificación de procesos.
+
+---
+
+## ⚙️ Cómo Compilar y Ejecutar
+
+Para trabajar con este repositorio y probar las modificaciones, sigue estos pasos:
+
+### 1. Dependencias
+
+Asegúrate de tener instalados los paquetes necesarios para compilar y emular XV6, incluyendo QEMU y GCC para entornos de 32 bits (multilib):
+
+```bash
+sudo apt-get install build-essential gdb git gcc-multilib qemu-system-x86
