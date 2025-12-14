@@ -1,10 +1,6 @@
 # 🚀 Proyecto_SO-XV6: Modificación y Extensión del Kernel XV6
 
-**Autor:** @abdijp101 (o tu nombre/equipo)
-
-Este repositorio documenta e implementa un conjunto de modificaciones y extensiones al sistema operativo [XV6](https://pdos.csail.mit.edu/os/xv6.html), con el objetivo de explorar y ampliar sus funcionalidades base como parte de un proyecto de Sistemas Operativos.
-
----
+Este repositorio documenta e implementa un conjunto de modificaciones y extensiones al sistema operativo [XV6]con el objetivo de explorar y ampliar sus funcionalidades base como parte de un proyecto de Sistemas Operativos.
 
 ## 🎯 Objetivo General del Proyecto
 
@@ -50,3 +46,12 @@ Asegúrate de tener instalados los paquetes necesarios para compilar y emular XV
 
 ```bash
 sudo apt-get install build-essential gdb git gcc-multilib qemu-system-x86
+###2. Compilación
+Navega al directorio raíz del proyecto y utiliza el Makefile para compilar el sistema operativo:
+```bash
+make
+###3. Ejecución
+Ejecuta el sistema operativo en el emulador QEMU:
+```bash
+make qemu
+
