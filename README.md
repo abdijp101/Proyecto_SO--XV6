@@ -4,8 +4,8 @@ Este proyecto es una extensión del sistema operativo xv6, desarrollado como par
 
 ## Integrantes
 
-*   (Nombre del integrante 1)
-*   (Nombre del integrante 2)
+* Tapia Milaveres, Abdiel Jean Piere	2023-119062
+* Vargas Centeno, Jarem Manuel		2023-119065
 
 ## Descripción del Proyecto
 
@@ -48,6 +48,27 @@ syscallinfo
 # Muestra el recuento de una llamada al sistema específica (por ejemplo, getpid, número 11)
 syscallinfo 11
 ```
+### 3. Comandos de Usuario Extendidos (`uptime`, `ps`)                                                                                                         
+Se han implementado comandos de usuario extendidos para proporcionar información adicional sobre el estado del sistema.
+#### `uptime` - Mostrar Tiempo de Actividad del Sistema                                               
+                                                                                                       
+ Este comando muestra el tiempo que el sistema lleva en funcionamiento (en ticks o segundos).          
+                                                                                                       
+ **Uso:**                                                                                              
+                                                                                                       
+ ```sh                                                                                                 
+ uptime                                                                                                
+ ```                                                                                                   
+                                                                                                       
+#### `ps` - Mostrar Procesos del Sistema                                                              
+                                                                                                       
+Este comando muestra información sobre los procesos activos en el sistema, incluyendo su PID, estado  
+y nombre.                                                                                               
+                                                                                                   
+**Uso:**                                                                                             
+```sh
+ps 
+```                                                                                
 
 ## Instrucciones para Compilar y Ejecutar
 
