@@ -88,6 +88,7 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  p->trace_mask = 0; // Initialize trace_mask to 0
 
   release(&ptable.lock);
 
