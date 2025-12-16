@@ -104,6 +104,10 @@ extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
 extern int sys_trace(void); // Declare sys_trace
+extern int sys_getsyscallinfo(void); // Declarar sys_getsyscallinfo
+
+// Array to store the count of each system call
+int syscall_counts[NELEM(syscalls) + 2] = {0};
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -128,6 +132,7 @@ static int (*syscalls[])(void) = {
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
 [SYS_trace]   sys_trace, // Add sys_trace to the syscalls array
+[SYS_getsyscallinfo] sys_getsyscallinfo, // Añadir sys_getsyscallinfo a la matriz de syscalls
 };
 
 // Array of system call names for tracing
@@ -154,7 +159,8 @@ static char *syscall_names[] = {
   "link",
   "mkdir",
   "close",
-  "trace"
+  "trace",
+  "getsyscallinfo"
 };
 
 void
@@ -165,10 +171,12 @@ syscall(void)
 
   num = curproc->tf->eax;
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
-    // Check if tracing is enabled for this syscall
+    // Incrementar el contador de la llamada al sistema
+    syscall_counts[num]++;
+    // Comprobar si el seguimiento está habilitado para esta llamada al sistema
     if (curproc->trace_mask & (1 << num)) {
       cprintf("%d: syscall %s (", curproc->pid, syscall_names[num]);
-      // For now, just print the name. Arguments will be added later.
+      // Por ahora, solo imprime el nombre. Los argumentos se agregarán más tarde.
       cprintf(")\n");
     }
     curproc->tf->eax = syscalls[num]();

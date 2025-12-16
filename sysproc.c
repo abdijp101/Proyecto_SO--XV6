@@ -99,3 +99,17 @@ sys_trace(void)
   myproc()->trace_mask = mask;
   return 0;
 }
+
+extern int syscall_counts[];
+extern int (*syscalls[])(void);
+
+// Copia el array de recuentos de llamadas al sistema a un búfer de espacio de usuario.
+int 
+sys_getsyscallinfo(void)
+{
+    char *syscall_counts_ptr;
+    if (argptr(0, &syscall_counts_ptr, sizeof(int) * (NELEM(syscalls) + 2)) < 0)
+        return -1;
+    memmove(syscall_counts_ptr, syscall_counts, sizeof(int) * (NELEM(syscalls) + 2));
+    return 0;
+}
