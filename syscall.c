@@ -82,6 +82,7 @@ argstr(int n, char **pp)
   return fetchstr(addr, pp);
 }
 
+// Declaraciones externas de funciones syscall
 extern int sys_chdir(void);
 extern int sys_close(void);
 extern int sys_dup(void);
@@ -103,12 +104,11 @@ extern int sys_unlink(void);
 extern int sys_wait(void);
 extern int sys_write(void);
 extern int sys_uptime(void);
-extern int sys_trace(void); // Declare sys_trace
-extern int sys_getsyscallinfo(void); // Declarar sys_getsyscallinfo
+extern int sys_trace(void); // Entregable 1: Trace
+extern int sys_getsyscallinfo(void); // Entregable 3: Info syscalls
+extern int sys_cps(void); // Entregable 2: Listar procesos
 
-// Array to store the count of each system call
-int syscall_counts[NELEM(syscalls) + 2] = {0};
-
+// Arreglo de punteros a funciones syscall
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
 [SYS_exit]    sys_exit,
@@ -131,36 +131,20 @@ static int (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
-[SYS_trace]   sys_trace, // Add sys_trace to the syscalls array
-[SYS_getsyscallinfo] sys_getsyscallinfo, // Añadir sys_getsyscallinfo a la matriz de syscalls
+[SYS_trace]   sys_trace,
+[SYS_getsyscallinfo] sys_getsyscallinfo,
+[SYS_cps]     sys_cps,
 };
 
-// Array of system call names for tracing
+// Array to store the count of each system call
+// IMPORTANTE: Definido AQUI para que NELEM(syscalls) funcione correctamente
+int syscall_counts[NELEM(syscalls) + 5] = {0};
+
+// Nombres de syscalls para el trace (Entregable 1)
 static char *syscall_names[] = {
-  "",
-  "fork",
-  "exit",
-  "wait",
-  "pipe",
-  "read",
-  "kill",
-  "exec",
-  "fstat",
-  "chdir",
-  "dup",
-  "getpid",
-  "sbrk",
-  "sleep",
-  "uptime",
-  "open",
-  "write",
-  "mknod",
-  "unlink",
-  "link",
-  "mkdir",
-  "close",
-  "trace",
-  "getsyscallinfo"
+  "", "fork", "exit", "wait", "pipe", "read", "kill", "exec", "fstat", "chdir", 
+  "dup", "getpid", "sbrk", "sleep", "uptime", "open", "write", "mknod", "unlink", 
+  "link", "mkdir", "close", "trace", "getsyscallinfo", "cps"
 };
 
 void
@@ -171,14 +155,14 @@ syscall(void)
 
   num = curproc->tf->eax;
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
-    // Incrementar el contador de la llamada al sistema
-    syscall_counts[num]++;
-    // Comprobar si el seguimiento está habilitado para esta llamada al sistema
+    // Entregable 3: Incrementar contador
+    syscall_counts[num]++; 
+    
+    // Entregable 1: Trace logic (si el mask lo permite)
     if (curproc->trace_mask & (1 << num)) {
-      cprintf("%d: syscall %s (", curproc->pid, syscall_names[num]);
-      // Por ahora, solo imprime el nombre. Los argumentos se agregarán más tarde.
-      cprintf(")\n");
+      cprintf("%d: syscall %s\n", curproc->pid, syscall_names[num]);
     }
+    
     curproc->tf->eax = syscalls[num]();
   } else {
     cprintf("%d %s: unknown sys call %d\n",

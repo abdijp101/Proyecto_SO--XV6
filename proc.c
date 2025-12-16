@@ -533,3 +533,28 @@ procdump(void)
     cprintf("\n");
   }
 }
+
+// Entregable 2: Imprimir procesos
+void
+proc_dump(void)
+{
+  static char *states[] = {
+  [UNUSED]    "unused",
+  [EMBRYO]    "embryo",
+  [SLEEPING]  "sleep ",
+  [RUNNABLE]  "runble",
+  [RUNNING]   "run   ",
+  [ZOMBIE]    "zombie"
+  };
+  struct proc *p;
+  
+  sti(); // Habilitar interrupciones
+  cprintf("PID \t ESTADO \t MEMORIA \t NOMBRE\n");
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->state == UNUSED)
+      continue;
+    cprintf("%d \t %s \t %d \t %s\n", p->pid, states[p->state], p->sz, p->name);
+  }
+  release(&ptable.lock);
+}

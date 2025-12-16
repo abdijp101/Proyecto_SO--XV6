@@ -90,6 +90,7 @@ sys_uptime(void)
   return xticks;
 }
 
+// Entregable 1: Establecer mascara de rastreo
 int
 sys_trace(void)
 {
@@ -100,16 +101,27 @@ sys_trace(void)
   return 0;
 }
 
-extern int syscall_counts[];
-extern int (*syscalls[])(void);
+// Entregable 2: Llamada al sistema para inspeccion de procesos (ps)
+int
+sys_cps(void)
+{
+  proc_dump(); // Funcion definida en proc.c
+  return 0;
+}
 
-// Copia el array de recuentos de llamadas al sistema a un búfer de espacio de usuario.
+extern int syscall_counts[];
+
+// Entregable 3: Copia el array de recuentos de llamadas al sistema
 int 
 sys_getsyscallinfo(void)
 {
     char *syscall_counts_ptr;
-    if (argptr(0, &syscall_counts_ptr, sizeof(int) * (NELEM(syscalls) + 2)) < 0)
+    // NOTA: Usamos 26 (tamano fijo) porque syscalls[] es estatico en syscall.c
+    // Esto evita el error de compilacion "undeclared" o "invalid application of sizeof"
+    int size = sizeof(int) * 26; 
+
+    if (argptr(0, &syscall_counts_ptr, size) < 0)
         return -1;
-    memmove(syscall_counts_ptr, syscall_counts, sizeof(int) * (NELEM(syscalls) + 2));
+    memmove(syscall_counts_ptr, syscall_counts, size);
     return 0;
 }
